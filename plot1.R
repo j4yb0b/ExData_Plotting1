@@ -8,20 +8,25 @@ df <- read.table (
 )
 
 # subset data
-df <- df[df$Date %in% c("1/2/2007", "2/2/2007"), ]
+df <- subset (
+  x = df, 
+  subset = Date %in% c("1/2/2007", "2/2/2007")
+)
 
 # plot
 png (
   filename = "plot1.png"
 ) 
 
-hist (
-  x = df$Global_active_power, 
-  col = "red", 
-  xlab = "Global Active Power (kilowatts)", 
-  main = "Global Active Power"
+with (
+  data = df, 
+  expr = hist (
+    Global_active_power,
+    xlab = "Global Active Power (kilowatts)",
+    col = "red",
+    main = "Global Active Power"
+  )
 )
 
 # close device
-dev.off (
-)
+dev.off ()

@@ -8,78 +8,93 @@ df <- read.table (
 )
 
 # subset data
-df <- df[df$Date %in% c("1/2/2007", "2/2/2007"), ]
+df <- subset (
+  x = df, 
+  subset = Date %in% c("1/2/2007", "2/2/2007")
+)
 
 # edit date variable
-df$Date <- as.Date(df$Date, format = "%d/%m/%Y")
-df$DateTime <- as.POSIXct(paste(df$Date, df$Time))
+df$Date <- as.Date (
+  x = df$Date, 
+  format = "%d/%m/%Y"
+)
+
+df$datetime <- as.POSIXct (
+  x = paste(df$Date, df$Time)
+)
 
 # plot
-png(
+png (
   filename = "plot4.png"
 ) 
 
-par(mfrow = c(2, 2))
-
-# plot i
-plot (
-  df$DateTime,
-  df$Global_active_power, 
-  type = "l",
-  xlab = "",
-  ylab = "Global Active Power"
+par (
+  mfrow = c(2, 2)
 )
 
-# plot ii
-plot (
-  df$DateTime,
-  df$Voltage, 
-  type = "l",
-  xlab = "datetime",
-  ylab = "Voltage"
+with (
+  data = df, 
+  expr = {
+    # plot i
+    plot (
+      x = datetime,
+      y = Global_active_power,
+      type = "l",
+      xlab = "",
+      ylab = "Global Active Power"
+    )
+ 
+    # plot ii
+    plot (
+      x = datetime,
+      y = Voltage, 
+      type = "l",
+      ylab = "Voltage"
+    )
+
+    # plot iii
+    plot (
+      x = datetime,
+      y = Sub_metering_1,
+      type = "l",
+      xlab = "",
+      ylab = "Energy Sub Metering"
+    )
+    
+    lines (
+      x = datetime,
+      y = Sub_metering_2, 
+      col = "red"
+    )
+    
+    lines (
+      x = datetime,
+      y = Sub_metering_3, 
+      col = "blue"
+    )
+    
+    # legend
+    legend (
+      x = "topright", 
+      legend = paste("Sub_metering", 1:3, sep = "_"),
+      col = c("black", "red", "blue"), 
+      lty = 1, 
+      bty = "n"
+    )
+    
+    # plot iv
+    plot (
+      x = datetime,
+      y = Global_reactive_power,
+      type = "l",
+      ylab = "Global_reactive_power"
+    )
+  }
 )
 
-# plot iii
-plot (
-  df$DateTime,
-  df$Sub_metering_1, 
-  type = "l",
-  xlab = "",
-  ylab = "Energy Sub Metering"
+par (
+  mfrow = c(1, 1)
 )
-
-lines (
-  df$DateTime,
-  df$Sub_metering_2, 
-  col = "red"
-)
-
-lines (
-  df$DateTime,
-  df$Sub_metering_3, 
-  col = "blue"
-)
-
-# legend
-legend (
-  "topright", 
-  legend = paste("Sub_metering", c(1:3), sep = "_"), 
-  col = c("black", "red", "blue"), 
-  lwd = 1, 
-  bty = "n"
-)
-
-# plot iv
-plot (
-  df$DateTime,
-  df$Global_reactive_power, 
-  type = "l",
-  xlab = "datetime",
-  ylab = "Global_reactive_power"
-)
-
-par(mfrow = c(1, 1))
 
 # close device
-dev.off (
-)
+dev.off ()
